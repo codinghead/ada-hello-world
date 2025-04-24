@@ -1,0 +1,9 @@
+name = "ada_blink_demo"
+description = "Shiny new project"
+version = "0.1.0-dev"
+
+authors = ["Stuart Cording"]
+maintainers = ["Stuart Cording <codinghead@gmail.com>"]
+maintainers-logins = ["codinghead"]
+
+executables = ["ada_blink_demo"]
