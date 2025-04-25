@@ -1,27 +1,28 @@
-with HAL; use HAL;
-with HAL.GPIO;
-with RP.GPIO; use RP.GPIO;
-with Ada.Real_Time; use Ada.Real_Time;
+with Interfaces.C;
 
-procedure Main is
-   LED : GPIO_Point := GPIO_17;
+procedure Ada_Blink_Demo is
 
-   procedure MsDelay (Ms : Natural) is
-      Start : Time := Clock;
+   procedure GPIO_Set (Pin : Natural; On : Boolean) is
+      package C renames Interfaces.C;
+      use type C.int;
+
+      function System (command : C.char_array) return C.int
+        with Import, Convention => C;
+      --  Import libc `system` function to execute a shell command
+
+      Command : aliased constant C.char_array :=
+        C.To_C ("gpioset 0" & Pin'Img & "=" & (if On then "1" else "0"));
+      --  Create the command string with a format: gpioset 0 <pin>=<1|0>
    begin
-      loop
-         exit when Clock - Start >= To_Time_Span (Duration (Ms) / 1000.0);
-      end loop;
-   end MsDelay;
-
+      if System (Command) /= 0 then
+         raise Program_Error with "gpioset failed";
+      end if;
+   end GPIO_Set;
 begin
-   Enable_GPIO_Clock;
-   Configure (LED, Output);
-
    loop
-      Set (LED);
-      MsDelay (500);
-      Clear (LED);
-      MsDelay (500);
+      GPIO_Set (17, True);
+      delay 0.5;
+      GPIO_Set (17, False);
+      delay 0.5;
    end loop;
-end Main;
+end Ada_Blink_Demo;
