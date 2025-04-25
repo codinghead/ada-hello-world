@@ -7,5 +7,4 @@ maintainers = ["Stuart Cording <codinghead@gmail.com>"]
 maintainers-logins = ["codinghead"]
 
 executables = ["ada_blink_demo"]
-[[depends-on]]
-ada_drivers_library = "*"
+
